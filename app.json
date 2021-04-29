@@ -1,0 +1,16 @@
+{
+  "expo": {
+   "name": "Insta Clone",
+   "icon": "./assets/icon.png",
+   "version": "1.0.0",
+   "slug": "your-app-slug",
+   "ios": {
+     "bundleIdentifier": "com.spsingh.instaclone",
+     "buildNumber": "1.0.0"
+   },
+   "android": {
+     "package": "com.spsingh.instaclone",
+     "versionCode": 1
+   }
+  }
+}
