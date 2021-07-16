@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUser, fetchUserPosts, fetchUserFollowing, clearData } from '../redux/actions/index'
 import { View, Text } from 'react-native';
-
+import axios from "axios"
 
 import FeedScreen from './main/Feed'
 import ProfileScreen from './main/Profile'
@@ -19,11 +19,18 @@ const EmptyScreen = () => {
 }
 
 export class Main extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+
+        }
+    }
     componentDidMount() {
         this.props.clearData();
-        this.props.fetchUser();
-        this.props.fetchUserPosts();
-        this.props.fetchUserFollowing();
+        this.props.fetchUser(this.props.token);
+        // this.props.fetchUserPosts();
+        // this.props.fetchUserFollowing();
     }
     render() {
         const { currentUser } = this.props
@@ -35,7 +42,8 @@ export class Main extends Component {
         }
         return (
             <Tab.Navigator initialRouteName="Feed" labeled={false} barStyle={{ backgroundColor: '#E33E5C' }}>
-                <Tab.Screen name="Feed" component={FeedScreen}
+                <Tab.Screen name="Feed"
+                    component={FeedScreen}
                     options={{
                         tabBarIcon: ({ color, size }) => (
                             <MaterialCommunityIcons name="home" color={color} size={26} />
@@ -71,7 +79,7 @@ export class Main extends Component {
                             <MaterialCommunityIcons name="account-circle" color={color} size={26} />
                         ),
                     }} />
-            </Tab.Navigator>
+            </Tab.Navigator >
 
         )
     }

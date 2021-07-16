@@ -26,7 +26,7 @@ function Feed(props) {
             .collection("userPosts")
             .doc(postId)
             .collection("likes")
-            .doc(firebase.auth().currentUser.uid)
+            .doc(firebase.auth().currentUser['_id'])
             .set({})
     }
     const onDislikePress = (userId, postId) => {
@@ -36,7 +36,7 @@ function Feed(props) {
             .collection("userPosts")
             .doc(postId)
             .collection("likes")
-            .doc(firebase.auth().currentUser.uid)
+            .doc(firebase.auth().currentUser['_id'])
             .delete()
     }
     return (

@@ -9,6 +9,7 @@ import {
     KeyboardAvoidingView,
 } from 'react-native';
 import firebase from 'firebase'
+import axios from "axios"
 export class Login extends Component {
     constructor(props) {
         super(props);
@@ -24,16 +25,37 @@ export class Login extends Component {
 
     onSignUp() {
         const { email, password } = this.state;
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .then((result) => {
-                console.log(result)
-            })
-            .catch((error) => {
-                console.log(error)
+        // firebase.auth().signInWithEmailAndPassword(email, password)
+        //     .then((result) => {
+        //         console.log(result)
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //         this.setState({
+        //             errorMessage: error.message
+        //         })
+        //     })
+        let userData = {
+            "email": email,
+            "password": password
+        }
+        axios.post("http://localhost:4000/user/login", userData).then(res => {
+            console.log(res)
+            if (res.data.message) {
                 this.setState({
-                    errorMessage: error.message
+                    errorMessage: res.data.message
                 })
+            }
+            else {
+                console.log(res)
+                this.props.loginSignupSuccess(res.data.token)
+            }
+        }).catch(err => {
+            console.log(err)
+            this.setState({
+                errorMessage: "Something went wrong"
             })
+        })
     }
 
     render() {
@@ -52,7 +74,8 @@ export class Login extends Component {
                         style={{
                             color: '#353031',
                             fontWeight: 'bold',
-                            fontSize: 14,
+                            fontSize: 18,
+                            height: 32,
                             marginTop: 3,
                             marginRight: 10
                         }}
@@ -72,7 +95,8 @@ export class Login extends Component {
                         style={{
                             color: '#353031',
                             fontWeight: 'bold',
-                            fontSize: 14,
+                            fontSize: 18,
+                            height: 32,
                             marginTop: 3,
                             marginRight: 10
                         }}

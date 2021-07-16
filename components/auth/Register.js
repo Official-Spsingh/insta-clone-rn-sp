@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { View, TextInput, TouchableOpacity, StyleSheet, Text } from 'react-native'
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Alert } from 'react-native'
 import firebase from 'firebase'
 import "firebase/firestore";
+import axios from "axios"
 export class Register extends Component {
     constructor(props) {
         super(props);
@@ -15,19 +16,40 @@ export class Register extends Component {
     }
     onSignUp = () => {
         const { email, password, name } = this.state;
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then((result) => {
-                firebase.firestore().collection("users")
-                    .doc(firebase.auth().currentUser.uid)
-                    .set({
-                        name,
-                        email
-                    })
-                console.log(result)
+        let userData = {
+            "name": name,
+            "email": email,
+            "password": password
+        }
+        // firebase.auth().createUserWithEmailAndPassword(email, password)
+        //     .then((result) => {
+        //         firebase.firestore().collection("users")
+        //             .doc(firebase.auth().currentUser.uid)
+        //             .set({
+        //                 name,
+        //                 email
+        //             })
+        //         console.log(result)
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //     })
+        axios.post("http://localhost:4000/user/signup", userData).then(res => {
+            if (res?.data?.message) {
+                this.setState({
+                    errorMessage: res.data.message
+                })
+            }
+            else {
+                console.log(res)
+                this.props.loginSignupSuccess(res.data.token)
+            }
+        }).catch(err => {
+            console.log(err)
+            this.setState({
+                errorMessage: "Something went wrong"
             })
-            .catch((error) => {
-                console.log(error)
-            })
+        })
     }
     render() {
         return (
@@ -45,7 +67,8 @@ export class Register extends Component {
                         style={{
                             color: '#353031',
                             fontWeight: 'bold',
-                            fontSize: 14,
+                            fontSize: 18,
+                            height: 32,
                             marginTop: 3,
                             marginRight: 10
                         }}
@@ -64,7 +87,8 @@ export class Register extends Component {
                         style={{
                             color: '#353031',
                             fontWeight: 'bold',
-                            fontSize: 14,
+                            fontSize: 18,
+                            height: 32,
                             marginTop: 3,
                             marginRight: 10
                         }}
@@ -84,7 +108,8 @@ export class Register extends Component {
                         style={{
                             color: '#353031',
                             fontWeight: 'bold',
-                            fontSize: 14,
+                            fontSize: 18,
+                            height: 32,
                             marginTop: 3,
                             marginRight: 10
                         }}
@@ -93,6 +118,9 @@ export class Register extends Component {
                 <TouchableOpacity onPress={() => this.onSignUp()} style={styles.button}>
                     <Text style={styles.buttonText}>Sign Up</Text>
                 </TouchableOpacity>
+                <View>
+                    <Text style={{ fontSize: 16, textAlign: 'center', marginTop: 10, color: 'red' }}>{this.state.errorMessage}</Text>
+                </View>
             </View>
         )
     }

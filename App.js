@@ -50,18 +50,27 @@ export class App extends Component {
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!user) {
-        this.setState({
-          loggedIn: false,
-          loaded: true,
-        })
-      } else {
-        this.setState({
-          loggedIn: true,
-          loaded: true,
-        })
-      }
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (!user) {
+    //     this.setState({
+    //       loggedIn: false,
+    //       loaded: true,
+    //     })
+    //   } else {
+    //     this.setState({
+    //       loggedIn: true,
+    //       loaded: true,
+    //     })
+    //   }
+    // })
+    this.setState({
+      loaded: true
+    })
+  }
+  loginSignupSuccess = (token) => {
+    this.setState({
+      loggedIn: true,
+      token: token
     })
   }
   render() {
@@ -79,8 +88,12 @@ export class App extends Component {
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Landing">
             <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Register" component={RegisterScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Register">
+              {() => <RegisterScreen loginSignupSuccess={this.loginSignupSuccess} />}
+            </Stack.Screen>
+            <Stack.Screen name="Login">
+              {() => <LoginScreen loginSignupSuccess={this.loginSignupSuccess} />}
+            </Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
       );
@@ -90,7 +103,9 @@ export class App extends Component {
       <Provider store={store}>
         <NavigationContainer >
           <Stack.Navigator initialRouteName="Main">
-            <Stack.Screen name="Main" component={MainScreen} />
+            <Stack.Screen name="Main" >
+              {() => <MainScreen token={this.state.token} />}
+            </Stack.Screen>
             <Stack.Screen name="Add" component={AddScreen} navigation={this.props.navigation} />
             <Stack.Screen name="Save" component={SaveScreen} navigation={this.props.navigation} />
             <Stack.Screen name="Comment" component={CommentScreen} navigation={this.props.navigation} />
